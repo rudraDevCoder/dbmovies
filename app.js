@@ -4,7 +4,7 @@ const sqlite3 = require("sqlite3");
 const path = require("path");
 
 const app = express();
-const up = express.json();
+app.use(express.json());
 const dbPath = path.join(__dirname, "moviesData.db");
 let db = null;
 const initializeDBAndServer = async () => {
@@ -41,5 +41,22 @@ app.post("/movies/", async (request, response) => {
     '${leadActor}');`;
   const updateQuery = await db.run(updateMovie);
   const movie_id = updateQuery.lastId;
-  response.send(updateQuery);
+  response.send("Movie Successfully Added");
+});
+app.get("/movies/:movieId/", async (request, response) => {
+  const { movieId } = request.params;
+  const getQuery = `SELECT * FROM movie WHERE movie_id = ${movieId};`;
+  const getResponse = await db.get(getQuery);
+  response.send(getResponse);
+});
+app.put("/movies/:movieId/", async (request, response) => {
+  const { movieId } = request.param;
+  const { directorId, movieName, leadActor } = request.body;
+  const updatePutQuery = `UPDATE movie 
+    SET director_id = "${directorId}",
+    movie_name = "${movieName}",
+    lead_actor = "${leadActor}"
+    WHERE movie_id = ${movieId};`;
+  const updateResponse = await db.run(updatePutQuery);
+  response.send("Movie Details Updated");
 });
