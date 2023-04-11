@@ -50,7 +50,7 @@ app.get("/movies/:movieId/", async (request, response) => {
   response.send(getResponse);
 });
 app.put("/movies/:movieId/", async (request, response) => {
-  const { movieId } = request.param;
+  const { movieId } = request.params;
   const { directorId, movieName, leadActor } = request.body;
   const updatePutQuery = `UPDATE movie 
     SET director_id = "${directorId}",
@@ -59,4 +59,5 @@ app.put("/movies/:movieId/", async (request, response) => {
     WHERE movie_id = ${movieId};`;
   const updateResponse = await db.run(updatePutQuery);
   response.send("Movie Details Updated");
+  console.log(request.body);
 });

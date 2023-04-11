@@ -18,7 +18,7 @@ PUT http://localhost:3000/movies/47/
 Content-Type: application/json
 
 {
-  "directorId": 24,
+  "directorId": "24",
   "movieName": "Thor",
   "leadActor": "Christopher Hemsworth"
 }
