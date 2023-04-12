@@ -6,6 +6,16 @@ const path = require("path");
 const app = express();
 app.use(express.json());
 const dbPath = path.join(__dirname, "moviesData.db");
+
+const convertDbObjectToResponseObject = (dbObject) => {
+  return {
+    movieId: dbObject.movie_id,
+    directorId: dbObject.director_id,
+    movieName: dbObject.movie_name,
+    leadActor: dbObject.lead_actor,
+  };
+};
+
 let db = null;
 const initializeDBAndServer = async () => {
   try {
@@ -29,7 +39,9 @@ app.get("/movies/", async (request, response) => {
     FROM
       movie`;
   const movieArray = await db.all(getMovieNameQuery);
-  response.send(movieArray);
+  response.send(
+    movieArray.map((eachPlayer) => convertDbObjectToResponseObject(eachPlayer))
+  );
 });
 app.post("/movies/", async (request, response) => {
   const { directorId, movieName, leadActor } = request.body;
@@ -61,3 +73,4 @@ app.put("/movies/:movieId/", async (request, response) => {
   response.send("Movie Details Updated");
   console.log(request.body);
 });
+module.exports = app;
