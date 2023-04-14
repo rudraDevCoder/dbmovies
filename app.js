@@ -15,6 +15,12 @@ const convertDbObjectToResponseObject = (dbObject) => {
     leadActor: dbObject.lead_actor,
   };
 };
+const convertDbObjectToResponseObjectDirector = (dbObject) => {
+  return {
+    directorId: dbObject.director_id,
+    directorName: dbObject.director_name,
+  };
+};
 
 let db = null;
 const initializeDBAndServer = async () => {
@@ -73,4 +79,34 @@ app.put("/movies/:movieId/", async (request, response) => {
   response.send("Movie Details Updated");
   console.log(request.body);
 });
+app.delete("/movies/:movieId/", async (request, response) => {
+  const { movieId } = request.params;
+  const deleteQuery = `DELETE FROM movie WHERE movie_id = ${movieId}`;
+  const deleteItem = await db.run(deleteQuery);
+  response.send("Movie Removed");
+});
+
+app.get("/directors/", async (request, response) => {
+  const getDirectorNameQuery = `
+    SELECT
+      *
+    FROM
+      director`;
+  const directorArray = await db.all(getDirectorNameQuery);
+  response.send(
+    directorArray.map((eachPlayer) =>
+      convertDbObjectToResponseObjectDirector(eachPlayer)
+    )
+  );
+});
+
+app.get("/directors/:directorId/movies/", async (request, response) => {
+  const { directorId } = request.params;
+  const directedMovies = `
+    SELECT movie.movie_name AS movieName FROM director INNER JOIN movie ON director.director_id = movie.director_id
+    WHERE movie.director_id = ${directorId};`;
+  const getDirectorsMovies = await db.all(directedMovies);
+  response.send(getDirectorsMovies);
+});
+
 module.exports = app;

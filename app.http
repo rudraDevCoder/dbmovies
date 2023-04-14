@@ -3,8 +3,8 @@ GET http://localhost:3000/movies
 
 ###
 POST http://localhost:3000/movies
-
 Content-Type: application/json
+
 {
     "directorId":27,
     "movieName":"Ek villan",
@@ -14,7 +14,6 @@ Content-Type: application/json
 GET http://localhost:3000/movies/46/
 ###
 PUT http://localhost:3000/movies/47/
-
 Content-Type: application/json
 
 {
@@ -22,3 +21,9 @@ Content-Type: application/json
   "movieName": "Thor",
   "leadActor": "Christopher Hemsworth"
 }
+###
+DELETE http://localhost:3000/movies/124/
+###
+GET http://localhost:3000/directors
+###
+GET http://localhost:3000/directors/27/movies/
