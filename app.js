@@ -15,6 +15,11 @@ const convertDbObjectToResponseObject = (dbObject) => {
     leadActor: dbObject.lead_actor,
   };
 };
+const convertDbObjectToResponseObjectMovie = (dbObject) => {
+  return {
+    movieName: dbObject.movie_name,
+  };
+};
 const convertDbObjectToResponseObjectDirector = (dbObject) => {
   return {
     directorId: dbObject.director_id,
@@ -46,7 +51,9 @@ app.get("/movies/", async (request, response) => {
       movie`;
   const movieArray = await db.all(getMovieNameQuery);
   response.send(
-    movieArray.map((eachPlayer) => convertDbObjectToResponseObject(eachPlayer))
+    movieArray.map((eachPlayer) =>
+      convertDbObjectToResponseObjectMovie(eachPlayer)
+    )
   );
 });
 app.post("/movies/", async (request, response) => {
@@ -65,7 +72,7 @@ app.get("/movies/:movieId/", async (request, response) => {
   const { movieId } = request.params;
   const getQuery = `SELECT * FROM movie WHERE movie_id = ${movieId};`;
   const getResponse = await db.get(getQuery);
-  response.send(getResponse);
+  response.send(convertDbObjectToResponseObject(getResponse));
 });
 app.put("/movies/:movieId/", async (request, response) => {
   const { movieId } = request.params;
